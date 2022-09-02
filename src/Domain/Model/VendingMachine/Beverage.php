@@ -5,7 +5,7 @@ namespace Tasuku43\VendingMachine\Domain\Model\VendingMachine;
 
 class Beverage
 {
-    public function __construct(private string $name)
+    public function __construct(private readonly string $name)
     {
     }
 
