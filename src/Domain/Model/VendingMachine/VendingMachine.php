@@ -9,13 +9,18 @@ class VendingMachine
     {
     }
 
-    public function push(Button $button): Beverage
+    public function canBuy(Button $button): bool
     {
         $beverage = Beverage::createByButton($button);
 
-        if (!$beverage->canBuy($this->inputAmount)) throw new \DomainException('Input amount is insufficient.');
+        return $beverage->canBuy($this->inputAmount);
+    }
 
-        return $beverage;
+    public function push(Button $button): Beverage
+    {
+        if (!$this->canBuy($button)) throw new \DomainException('Input amount is insufficient.');
+
+        return Beverage::createByButton($button);
     }
 
     public function insert(Maney $maney): self

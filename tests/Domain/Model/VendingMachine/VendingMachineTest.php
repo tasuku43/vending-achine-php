@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Tasuku43\VendingMachine\Test\Domain\Model\VendingMachine;
 
 use PHPUnit\Framework\TestCase;
-use Tasuku43\VendingMachine\Domain\Model\VendingMachine\Beverage\Cola;
-use Tasuku43\VendingMachine\Domain\Model\VendingMachine\Beverage\OolongTea;
 use Tasuku43\VendingMachine\Domain\Model\VendingMachine\Button;
 use Tasuku43\VendingMachine\Domain\Model\VendingMachine\Maney;
 use Tasuku43\VendingMachine\Domain\Model\VendingMachine\VendingMachine;
@@ -46,6 +44,25 @@ class VendingMachineTest extends TestCase
         $machine = new VendingMachine();
         $machine = $machine->insert(new Maney(100));
         $beverage = $machine->push(Button::RedBull);
+    }
+
+    public function testCanBuy(): void
+    {
+        $machine = new VendingMachine();
+
+        self::assertFalse($machine->canBuy(Button::Cola));
+        self::assertFalse($machine->canBuy(Button::OolongTea));
+        self::assertFalse($machine->canBuy(Button::RedBull));
+
+        $machine = $machine->insert(new Maney(100));
+
+        self::assertTrue($machine->canBuy(Button::Cola));
+        self::assertTrue($machine->canBuy(Button::OolongTea));
+        self::assertFalse($machine->canBuy(Button::RedBull));
+
+        $machine = $machine->insert(new Maney(100));
+
+        self::assertTrue($machine->canBuy(Button::RedBull));
     }
 
     public function testPush_お金をいれずにボタンを押すと例外が発生する(): void
