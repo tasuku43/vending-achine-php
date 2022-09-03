@@ -25,8 +25,14 @@ class VendingMachine
 
     public function insert(Maney $maney): self
     {
-        if (!$maney->eq(new Maney(100))) throw new \DomainException('Only 100 yen can be inserted.');
+        if ($maney->eq(new Maney(10))
+            || $maney->eq(new Maney(50))
+            || $maney->eq(new Maney(100))
+            || $maney->eq(new Maney(500))
+        ) {
+            return new self($this->inputAmount->add($maney));
+        }
 
-        return new self($this->inputAmount->add($maney));
+        throw new \DomainException('Only 100 yen can be inserted.');
     }
 }

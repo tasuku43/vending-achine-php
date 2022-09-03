@@ -73,11 +73,32 @@ class VendingMachineTest extends TestCase
         $machine->push(Button::Cola);
     }
 
-    public function testInsert_100円以外を投入すると例外が発生する(): void
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testInsert_10円、50円、500円のコインが使える(): void
+    {
+        $machine = new VendingMachine();
+
+        $machine->insert(new Maney(10));
+        $machine->insert(new Maney(50));
+        $machine->insert(new Maney(100));
+        $machine->insert(new Maney(500));
+    }
+
+    /**
+     * @testWith [20]
+     *           [30]
+     *           [80]
+     *           [120]
+     *           [200]
+     *           [1000]
+     */
+    public function testInsert_10円、50円、500円以外のコインは使えない(int $maney): void
     {
         $this->expectException(\DomainException::class);
 
         $machine = new VendingMachine();
-        $machine->insert(new Maney(1000));
+        $machine->insert(new Maney($maney));
     }
 }
