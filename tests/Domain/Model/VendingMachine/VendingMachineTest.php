@@ -13,17 +13,40 @@ class VendingMachineTest extends TestCase
     public function testPush_100円を投入してからコーラのボタンを押すとコーラが出てくる(): void
     {
         $machine = new VendingMachine();
-        $machine = $machine->insert(new Maney(100));
-        $beverage = $machine->push(Button::Cola);
+        $machine->insert(new Maney(100));
+        [$beverage, $change] = $machine->push(Button::Cola);
 
         self::assertSame('cola', $beverage->getName());
+    }
+
+    public function testPush_500円を投入してからコーラのボタンを押すとコーラと400円のお釣りが出てくる(): void
+    {
+        $machine = new VendingMachine();
+        $machine->insert(new Maney(500));
+        [$beverage, $change] = $machine->push(Button::Cola);
+
+        self::assertSame('cola', $beverage->getName());
+        self::assertTrue($change->eq(new Maney(400)));
+    }
+
+    public function testPush_100円を投入してからコーラを購入すると、更に100を投入しなければウーロン茶は買えない(): void
+    {
+        $machine = new VendingMachine();
+        $machine->insert(new Maney(100));
+        [$beverage, $change] = $machine->push(Button::Cola);
+
+        self::assertSame('cola', $beverage->getName());
+
+        $this->expectException(\DomainException::class);
+
+        $machine->push(Button::OolongTea);
     }
 
     public function testPush_100円を投入してからウーロン茶のボタンを押すとウーロン茶が出てくる(): void
     {
         $machine = new VendingMachine();
-        $machine = $machine->insert(new Maney(100));
-        $beverage = $machine->push(Button::OolongTea);
+        $machine->insert(new Maney(100));
+        [$beverage, $change] = $machine->push(Button::OolongTea);
 
         self::assertSame('oolong tea', $beverage->getName());
     }
@@ -31,8 +54,8 @@ class VendingMachineTest extends TestCase
     public function testPush_200円を投入してからRedBullのボタンを押すとRedBullが出てくる(): void
     {
         $machine = new VendingMachine();
-        $machine = $machine->insert(new Maney(100))->insert(new Maney(100));
-        $beverage = $machine->push(Button::RedBull);
+        $machine->insert(new Maney(100))->insert(new Maney(100));
+        [$beverage, $change] = $machine->push(Button::RedBull);
 
         self::assertSame('red bull', $beverage->getName());
     }
@@ -42,8 +65,8 @@ class VendingMachineTest extends TestCase
         $this->expectException(\DomainException::class);
 
         $machine = new VendingMachine();
-        $machine = $machine->insert(new Maney(100));
-        $beverage = $machine->push(Button::RedBull);
+        $machine->insert(new Maney(100));
+        [$beverage, $change] = $machine->push(Button::RedBull);
     }
 
     public function testCanBuy(): void
@@ -54,13 +77,13 @@ class VendingMachineTest extends TestCase
         self::assertFalse($machine->canBuy(Button::OolongTea));
         self::assertFalse($machine->canBuy(Button::RedBull));
 
-        $machine = $machine->insert(new Maney(100));
+        $machine->insert(new Maney(100));
 
         self::assertTrue($machine->canBuy(Button::Cola));
         self::assertTrue($machine->canBuy(Button::OolongTea));
         self::assertFalse($machine->canBuy(Button::RedBull));
 
-        $machine = $machine->insert(new Maney(100));
+        $machine->insert(new Maney(100));
 
         self::assertTrue($machine->canBuy(Button::RedBull));
     }

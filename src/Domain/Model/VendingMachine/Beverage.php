@@ -27,4 +27,11 @@ class Beverage
     {
         return $inputAmount->gt($this->price);
     }
+
+    public function caluculateChange(Maney $inputAmount): Maney
+    {
+        assert($inputAmount->gt($this->price));
+
+        return $inputAmount->sub($this->price);
+    }
 }

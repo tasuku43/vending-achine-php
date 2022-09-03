@@ -7,6 +7,7 @@ class Maney
 {
     public function __construct(private readonly int $value)
     {
+        assert($value >= 0);
     }
 
     public function eq(Maney $maney): bool
@@ -27,5 +28,15 @@ class Maney
     public function add(Maney $maney): self
     {
         return new self($this->value + $maney->value);
+    }
+
+    public function sub(Maney $maney): self
+    {
+        return new self($this->value - $maney->value);
+    }
+
+    public function clone(): self
+    {
+        return new self($this->value);
     }
 }
