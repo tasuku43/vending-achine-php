@@ -7,4 +7,5 @@ enum Button
 {
     case Cola;
     case OolongTea;
+    case RedBull;
 }

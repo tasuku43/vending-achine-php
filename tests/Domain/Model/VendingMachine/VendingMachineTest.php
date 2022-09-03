@@ -30,6 +30,24 @@ class VendingMachineTest extends TestCase
         self::assertSame('oolong tea', $beverage->getName());
     }
 
+    public function testPush_200円を投入してからRedBullのボタンを押すとRedBullが出てくる(): void
+    {
+        $machine = new VendingMachine();
+        $machine = $machine->insert(new Maney(100))->insert(new Maney(100));
+        $beverage = $machine->push(Button::RedBull);
+
+        self::assertSame('red bull', $beverage->getName());
+    }
+
+    public function testPush_100円を投入してからRedBullのボタンを押すと例外が発生する(): void
+    {
+        $this->expectException(\DomainException::class);
+
+        $machine = new VendingMachine();
+        $machine = $machine->insert(new Maney(100));
+        $beverage = $machine->push(Button::RedBull);
+    }
+
     public function testPush_お金をいれずにボタンを押すと例外が発生する(): void
     {
         $this->expectException(\DomainException::class);
