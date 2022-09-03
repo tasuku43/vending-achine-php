@@ -19,6 +19,11 @@ class Maney
         return $this->value >= $maney->value;
     }
 
+    public function lt(Maney $maney): bool
+    {
+        return !$this->gt($maney);
+    }
+
     public function add(Maney $maney): self
     {
         return new self($this->value + $maney->value);

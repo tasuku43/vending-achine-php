@@ -5,8 +5,16 @@ namespace Tasuku43\VendingMachine\Domain\Model\VendingMachine;
 
 class Beverage
 {
-    public function __construct(private readonly string $name)
+    public function __construct(private readonly string $name, private readonly Maney $price)
     {
+    }
+
+    public static function createByButton(Button $button): self
+    {
+        return match ($button) {
+            Button::Cola => new self('cola', new Maney(100)),
+            Button::OolongTea => new self('oolong tea', new Maney(100)),
+        };
     }
 
     public function getName(): string
